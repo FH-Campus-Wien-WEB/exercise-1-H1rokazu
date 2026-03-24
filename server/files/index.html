@@ -6,32 +6,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        article.movie {
+            background-color: #ffffff;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Setup for hover effect */
+        }
+
+        article.movie:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        span {
+            margin-right: 8px;
+        }
+
+        .genre {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #2980b9;
+            display: inline-block;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        dl {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+
+        dt {
+            font-weight: bold;
+            color: #555;
+        }
+
+        dd {
+            margin: 0;
+        }
+
+        .plot {
+            line-height: 1.6;
+            font-size: 1.1em;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            color: #444;
+        }
     </style>
     <script>
-        function reverseString(s) {
-            return s.split("").reverse().join("");
-        }
-
         window.onload = function () {
-            const xhr = new XMLHttpRequest()
+            const xhr = new XMLHttpRequest();
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
+                const bodyElement = document.querySelector("body");
+
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+                    const movies = JSON.parse(xhr.responseText);
+
+                    movies.forEach(movie => {
+
+                        const movieArticle = document.createElement("article");
+                        movieArticle.className = "movie";
+
+                        movieArticle.innerHTML = `
+                            <header>
+                                <h2>${movie.Title}</h2>
+                                <p>Released: <time datetime="${movie.Released}">${movie.Released}</time></p>
+                            </header>
+
+                            <img src="${movie.Poster}" alt="Movie Poster for ${movie.Title}" width="200">
+
+                            <p class="plot"><strong>Plot:</strong> ${movie.Plot}</p>
+
+                            <dl>
+                                <dt>Runtime</dt>
+                                <dd>${movie.Runtime} minutes</dd>
+
+                                <dt>Genres</dt>
+                                <dd>${movie.Genres.join(", ")}</dd>
+
+                                <dt>Directors</dt>
+                                <dd>${movie.Directors.join(", ")}</dd>
+
+                                <dt>Writers</dt>
+                                <dd>${movie.Writers.join(", ")}</dd>
+
+                                <dt>Actors</dt>
+                                <dd>${movie.Actors.join(", ")}</dd>
+
+                                <dt>Metascore</dt>
+                                <dd>${movie.Metascore}</dd>
+
+                                <dt>IMDb Rating</dt>
+                                <dd>${movie.imdbRating}</dd>
+                            </dl>
+                            <hr>
+                        `;
+
+                        bodyElement.appendChild(movieArticle);
+                    });
+
                 } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
+                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText);
                 }
             }
-            xhr.open("GET", "/movies")
-            xhr.send()
+            xhr.open("GET", "/movies");
+            xhr.send();
         }
     </script>
-
 </head>
 
 <body>
+<h1>My Movie Collection</h1>
 </body>
 
 </html>
